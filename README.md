@@ -1,4 +1,4 @@
-# 🎮 Sistem Booking Rental PS  
+# 🎮 Console Arena - Sistem Booking Rental PS  
 
 Sistem ini adalah aplikasi booking rental PlayStation yang dibangun menggunakan **Laravel** dengan **Vite**, serta mendukung autentikasi Google dan pembayaran melalui Midtrans.  
 
