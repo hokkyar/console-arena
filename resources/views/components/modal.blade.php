@@ -3,7 +3,7 @@
     <span class="close">&times;</span>
 
     <div id="step1">
-      <h2 id="modal-title">Pilih Sesi</h2>
+      <h2 id="modal-title"></h2>
       <div id="modal-body"></div>
     </div>
 
@@ -18,9 +18,9 @@
       </form>
 
       <div class="price-container">
-          <div class="price-item">Price <span id="base-price">10,000</span></div>
+          <div class="price-item">Price <span id="base-price">0</span></div>
           <div class="price-item">Weekend Surcharge <span id="weekend-surcharge">0</span></div>
-          <div class="price-item total">Total <span id="total">10,000</span></div>
+          <div class="price-item total">Total <span id="total">0</span></div>
       </div>
 
       <div style="display: flex; justify-content: space-between; gap: 5px;">

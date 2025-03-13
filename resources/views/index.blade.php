@@ -157,12 +157,12 @@
               step2.style.display = "none";
               modalBody.innerHTML = '';
               
-              modalTitle.innerHTML = `Pilih Sesi (${selectedService})<br> ${selectedDate.toLocaleDateString('id-ID', { 
+              modalTitle.innerHTML = `${selectedService} <p style="font-size: 18px; font-weight: normal;">${selectedDate.toLocaleDateString('id-ID', { 
                   weekday: 'long', 
                   day: 'numeric', 
                   month: 'long', 
                   year: 'numeric' 
-              })}`;
+              })}</p>`;
 
               if (!availableDates[dateKey][selectedService] || availableDates[dateKey][selectedService].length === 0) {
                   modalBody.innerHTML = "<p>Sesi penuh</p>";
@@ -173,7 +173,7 @@
                       slot.textContent = session;
 
                       slot.addEventListener('click', function() {
-                          showStep2({session, dateKey, selectedService});
+                          showStep2(session);
                       });
 
                       modalBody.appendChild(slot);
@@ -185,10 +185,17 @@
               step1.style.display = "none";
               step2.style.display = "block";
               selectedSessionText.innerHTML = `
-                  ${selectedSession.selectedService} <br>
-                  ${selectedSession.session} <br>
-                  ${selectedSession.dateKey}
+                  ${selectedService} - ${selectedSession} <br> ${selectedDate}
               `;
+
+              const basePrice = selectedService === "Rental PS 4" ? 30000 : 40000; // get from db
+              const dayOfWeek = selectedDate.getDay();
+              const weekendSurcharge = (dayOfWeek === 0 || dayOfWeek === 6) ? 50000 : 0;
+              const total = basePrice + weekendSurcharge
+
+              $('#base-price').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(basePrice))
+              $('#weekend-surcharge').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(weekendSurcharge))
+              $('#total').text(new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(total))
           }
 
           backButton.addEventListener('click', showStep1);
