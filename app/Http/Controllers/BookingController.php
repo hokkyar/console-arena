@@ -52,9 +52,9 @@ class BookingController extends Controller
             'service_id' => 'required|exists:services,id',
             'booking_date' => 'required|date',
             'session' => 'required|string|in:Sesi 1,Sesi 2,Sesi 3',
-            'customer_name' => 'required|string',
-            'customer_email' => 'required|email',
-            'customer_phone' => 'required|string',
+            'customer_name' => 'required|string|min:3|max:50',
+            'customer_email' => 'required|email|max:100',
+            'customer_phone' => 'required|string|min:10|max:15',
         ]);
 
         if ($validator->fails()) {
@@ -86,14 +86,22 @@ class BookingController extends Controller
         try {
             $booking = Booking::create($request->all());
             $paymentController = new PaymentController();
-            $request->booking_id = $booking->id;
-            $request->total = $amount;
-            $snapToken = $paymentController->getSnapToken($request);
+            $snapToken = $paymentController->getSnapToken([
+                'booking_id' => $booking->id,
+                'total' => $amount,
+                'service_name' => $service->name,
+                'session' => $request->session,
+                'customer_name' => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_phone' => $request->customer_phone
+            ]);
+
             Payment::create([
                 'booking_id' => $booking->id,
                 'amount' => $amount,
                 'snap_token' => $snapToken
             ]);
+
             DB::commit();
             return response()->json(['message' => 'Booking berhasil', 'snap_token' => $snapToken], 200);
         } catch (\Exception $e) {

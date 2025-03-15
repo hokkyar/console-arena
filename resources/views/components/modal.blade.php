@@ -13,9 +13,18 @@
       <p id="selected-session"></p>
 
       <form class="form-container">
-        <input type="text" placeholder="Nama" id="customer_name" class="input-field">
-        <input type="text" placeholder="Email" id="customer_email" class="input-field">
-        <input type="text" placeholder="No Telepon" id="customer_phone" class="input-field">
+        <div class="form-group">
+            <input type="text" placeholder="Nama" id="customer_name" class="input-field">
+            <small class="error-input">Nama tidak boleh kosong!</small>
+        </div>
+        <div class="form-group">
+            <input type="email" placeholder="Email" id="customer_email" class="input-field">
+            <small class="error-input">Email tidak valid!</small>
+        </div>
+        <div class="form-group">
+            <input type="text" placeholder="No Telepon" id="customer_phone" class="input-field">
+            <small class="error-input">Nomor telepon harus angka dan minimal 10 digit!</small>
+        </div>
       </form>
 
       <div class="price-container">
@@ -30,5 +39,8 @@
       </div>
 
     </div>
+
+    <div id="snap-container" style="width: 100%; height: 600px; display: none;"></div>
+
   </div>
 </div>

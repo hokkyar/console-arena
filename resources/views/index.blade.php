@@ -52,7 +52,7 @@
           document.querySelectorAll('.service-option').forEach(el => el.classList.remove('selected'));
           document.querySelector(`[data-service-id="${serviceId}"]`).classList.add('selected')
           renderCalendar();
-        }
+      }
 
       if (serviceOptions.length == 0) {
           console.warn("Empty services.");
@@ -241,6 +241,8 @@
       renderCalendar();
 
       function bookSession(serviceId, date, session) {
+          isLoading(true)
+
           fetch('/', {
               method: 'POST',
               headers: {
@@ -258,12 +260,56 @@
           })
           .then(response => response.json())
           .then(data => {
-              snap.pay(data.snap_token);
+              isLoading(false)
+              if (data.errors) {
+                showErrors(data.errors);
+                return
+              }
+
+              window.onclick = null;
+              $('.close').hide()
+              $('#step2').hide()
+              $('#snap-container').show()
+              snap.embed(data.snap_token, { 
+                embedId: 'snap-container',
+              })
           })
           .catch(error => {
-            console.log(error)
+            isLoading(false)
+            $('#error-message').show()
           });
       }
+
+      function showErrors(errors) {
+        Object.keys(errors).forEach((key) => {
+            const input = document.getElementById(key);
+            const formGroup = input.parentElement;
+            const errorMessage = formGroup.querySelector(".error-input");
+            errorMessage.innerText = errors[key][0]; 
+            formGroup.classList.add("error"); 
+        });
+      }
+
+      function isLoading(loadingState) {
+        if (loadingState) {
+          $('#confirm-btn').prop('disabled', true)
+          $('#back-btn').prop('disabled', true)
+          $('#confirm-btn').text('Loading...')
+        } else {
+          $('#confirm-btn').prop('disabled', false)
+          $('#back-btn').prop('disabled', false)
+          $('#confirm-btn').text('Lanjut Pembayaran')
+        }
+      }
+
+      document.querySelectorAll(".input-field").forEach((input) => {
+          input.addEventListener("input", function () {
+              const formGroup = this.parentElement;
+              formGroup.classList.remove("error");
+              formGroup.querySelector(".error-input").innerText = "";
+          });
+      });
+
   });
 </script>
 

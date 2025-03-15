@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Berhasil</title>
+    <title>Pembayaran</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,6 +22,11 @@
         .checkmark {
             font-size: 50px;
             color: #4CAF50;
+            animation: pop 0.5s ease-out;
+        }
+        .crossmark {
+            font-size: 50px;
+            color: #FF0000;
             animation: pop 0.5s ease-out;
         }
         @keyframes pop {
@@ -52,11 +57,29 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="checkmark">✔</div>
-        <h2>Pembayaran Berhasil!</h2>
-        <p>Terima kasih! Pembayaran Anda telah berhasil diproses.</p>
-        <a href="/" class="button">Kembali ke Beranda</a>
-    </div>
+    <div class="container" id="payment-container"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('transaction_status');
+        const container = document.getElementById('payment-container');
+
+        if (status === 'settlement') {
+            document.title = "Pembayaran Berhasil";
+            container.innerHTML = `
+                <div class="checkmark">✔</div>
+                <h2>Pembayaran Berhasil!</h2>
+                <p>Terima kasih! Pembayaran Anda telah berhasil diproses.</p>
+                <a href="/" class="button">Kembali ke Halaman Booking</a>
+            `;
+        } else {
+            document.title = "Pembayaran Gagal";
+            container.innerHTML = `
+                <div class="crossmark">✖</div>
+                <h2>Pembayaran Gagal!</h2>
+                <p>Maaf, pembayaran Anda gagal karena sesi sudah dibooking atau terjadi kesalahan.</p>
+                <a href="/" class="button">Kembali ke Halaman Booking</a>
+            `;
+        }
+    </script>
 </body>
 </html>

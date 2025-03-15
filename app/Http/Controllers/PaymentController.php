@@ -21,21 +21,29 @@ class PaymentController extends Controller
         Config::$is3ds = config('midtrans.is_3ds');
     }
 
-    public function getSnapToken(Request $request)
+    public function getSnapToken($data)
     {
         $params = [
           'transaction_details' => [
-              'order_id' => $request->booking_id . '-' . rand(),
-              'gross_amount' => $request->total,
+              'order_id' => $data['booking_id'] . '-' . rand(),
+              'gross_amount' => $data['total'],
           ],
           'customer_details' => [
-              'first_name' => $request->customer_name,
-              'email' => $request->customer_email,
-              'phone' => $request->customer_phone,
+              'first_name' => $data['customer_name'],
+              'email' => $data['customer_email'],
+              'phone' => $data['customer_phone'],
           ],
-          // 'callbacks' => [
-          //   'finish' => url('/payment/success'),
-          // ],
+          'item_details' => [
+              [
+                  'id' => $data['booking_id'],
+                  'price' => (int) str_replace(',', '', $data['total']),
+                  'quantity' => 1,
+                  'name' => substr($data['service_name'] . ' - ' . $data['session'], 0, 50),
+              ]
+          ],
+          'callbacks' => [
+            'finish' => url('/payment/redirect'),
+          ],
         ];
 
         try {
@@ -105,13 +113,13 @@ class PaymentController extends Controller
           DB::commit();
           return response()->json(['message' => 'Callback processed successfully']);
       }catch(\Exception $e) {
-        DB::rollback();
-        return response()->json(['message' => 'Callback processing failed'], 500);
+          DB::rollback();
+          return response()->json(['message' => 'Callback processing failed'], 500);
       }
     }
 
     public function redirect()
     {
-      return view('payment-success');
+        return view('payment-redirect');
     }
 }
