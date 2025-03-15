@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,4 +15,7 @@ use App\Http\Controllers\BookingController;
 |
 */
 
-Route::get('/', [BookingController::class, 'index']);
+Route::get('/', [BookingController::class, 'index'])->name('booking.index');
+Route::post('/', [BookingController::class, 'store'])->name('booking.store');
+Route::post('/payment/callback', [PaymentController::class, 'handle']);
+Route::get('/payment/success', [PaymentController::class, 'redirectPage']);

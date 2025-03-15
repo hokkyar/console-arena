@@ -43,6 +43,10 @@ p {
   gap: 20px;
 }
 
+.no-services {
+  margin: auto;
+}
+
 .calendar-section {
   flex: 2;
   min-width: 300px;
@@ -318,4 +322,14 @@ select {
   font-weight: bold;
   color: var(--primary-color);
   font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  background: #ffe6e6;
+  padding: 10px;
+  border: 1px solid red;
+  margin-bottom: 10px;
+  text-align: center;
+  border-radius: 5px;
 }

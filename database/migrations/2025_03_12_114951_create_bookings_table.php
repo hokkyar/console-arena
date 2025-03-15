@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->date('booking_date');
-            $table->decimal('total_price', 10, 2);
-            $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
+            $table->string('session'); // Sesi yang dipilih (Sesi 1, Sesi 2, Sesi 3)
+            $table->string('customer_name'); // Nama pelanggan
+            $table->string('customer_phone'); // No HP pelanggan
+            $table->string('customer_email'); // Email pelanggan
+            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending'); // Status pembayaran
             $table->timestamps();
         });
     }
