@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Booking;
 use App\Models\Payment;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class PaymentController extends Controller
 {
@@ -23,18 +25,17 @@ class PaymentController extends Controller
     {
         $params = [
           'transaction_details' => [
-              'order_id' => $request->booking_id . '-'. rand(),
+              'order_id' => $request->booking_id . '-' . rand(),
               'gross_amount' => $request->total,
           ],
           'customer_details' => [
               'first_name' => $request->customer_name,
-              'last_name' => 'Doe',
               'email' => $request->customer_email,
               'phone' => $request->customer_phone,
           ],
-          'callbacks' => [
-            'finish' => url('/payment/success'),
-          ],
+          // 'callbacks' => [
+          //   'finish' => url('/payment/success'),
+          // ],
         ];
 
         try {
@@ -67,30 +68,49 @@ class PaymentController extends Controller
           return response()->json(['message' => 'Payment not found'], 404);
       }
 
-      switch($transactionStatus) {
-          case 'settlement':
-              $booking->status = 'paid';
-              $payment->status = 'success';
-              break;
-          case 'pending':
-              $booking->status = 'pending';
-              $payment->status = 'pending';
-              break;
-          case 'cancel':
-              $booking->status = 'cancelled';
-              $payment->status = 'failed';
-              break;
-          default:
-              return response()->json(['message' => 'Invalid transaction status'], 400);
+      $existingBooking = Booking::where([
+          'service_id' => $booking->service_id,
+          'booking_date' => $booking->booking_date,
+          'session' => $booking->session,
+          'status' => 'paid'
+      ])->exists();
+
+      if ($existingBooking) {
+          Transaction::cancel($request->order_id);
+          $payment->status = 'failed';
+          $booking->status = 'cancelled';
+          $booking->save();
+          $payment->save();
+          return response()->json(['message' => 'Session already booked'], 409);
       }
 
-      $payment->save();
-      $booking->save();
-
-      return response()->json(['message' => 'Callback processed successfully']);
+      DB::beginTransaction();
+          try {
+            switch($transactionStatus) {
+              case 'settlement':
+                  $booking->status = 'paid';
+                  $payment->status = 'success';
+                  break;
+              case 'pending':
+                  $booking->status = 'pending';
+                  $payment->status = 'pending';
+                  break;
+              case 'cancel':
+                  $booking->status = 'cancelled';
+                  $payment->status = 'failed';
+                  break;
+          }
+          $payment->save();
+          $booking->save();
+          DB::commit();
+          return response()->json(['message' => 'Callback processed successfully']);
+      }catch(\Exception $e) {
+        DB::rollback();
+        return response()->json(['message' => 'Callback processing failed'], 500);
+      }
     }
 
-    public function redirectPage()
+    public function redirect()
     {
       return view('payment-success');
     }

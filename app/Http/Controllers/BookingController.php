@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\Booking;
@@ -81,19 +82,23 @@ class BookingController extends Controller
             $amount += 50000;
         }
 
-        $booking = Booking::create($request->all());
-        
-        $paymentController = new PaymentController();
-        $request->booking_id = $booking->id;
-        $request->total = $amount;
-        $snapToken = $paymentController->getSnapToken($request);
-
-        Payment::create([
-            'booking_id' => $booking->id,
-            'amount' => $amount,
-            'snap_token' => $snapToken
-        ]);
-
-        return response()->json(['message' => 'Booking berhasil!', 'snap_token' => $snapToken], 200);
+        DB::beginTransaction();
+        try {
+            $booking = Booking::create($request->all());
+            $paymentController = new PaymentController();
+            $request->booking_id = $booking->id;
+            $request->total = $amount;
+            $snapToken = $paymentController->getSnapToken($request);
+            Payment::create([
+                'booking_id' => $booking->id,
+                'amount' => $amount,
+                'snap_token' => $snapToken
+            ]);
+            DB::commit();
+            return response()->json(['message' => 'Booking berhasil', 'snap_token' => $snapToken], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Booking gagal', 'snap_token' => null], 500);
+        }
     }
 }

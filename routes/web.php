@@ -18,4 +18,4 @@ use App\Http\Controllers\PaymentController;
 Route::get('/', [BookingController::class, 'index'])->name('booking.index');
 Route::post('/', [BookingController::class, 'store'])->name('booking.store');
 Route::post('/payment/callback', [PaymentController::class, 'handle']);
-Route::get('/payment/success', [PaymentController::class, 'redirectPage']);
+Route::get('/payment/success', [PaymentController::class, 'redirect']);
