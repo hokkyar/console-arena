@@ -74,17 +74,21 @@ class BookingController extends Controller
         if ($existingBooking) return response()->json(['message' => 'Sesi sudah dibooking orang lain!'], 409);
 
         $amount = 0;
+        $weekendSurcharge = 0;
         $service = Service::find($request->service_id);
         $amount += $service->base_price;
 
         $dayOfWeek = date('N', strtotime($request->booking_date));
         if ($dayOfWeek == 6 || $dayOfWeek == 7) {
+            $weekendSurcharge = 50000;
             $amount += 50000;
         }
 
         DB::beginTransaction();
         try {
-            $booking = Booking::create($request->all());
+            $all = $request->all();
+            $all['weekend_surcharge'] = $weekendSurcharge;
+            $booking = Booking::create($all);
             $paymentController = new PaymentController();
             $snapToken = $paymentController->getSnapToken([
                 'booking_id' => $booking->id,

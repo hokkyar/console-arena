@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('customer_name'); // Nama pelanggan
             $table->string('customer_phone'); // No HP pelanggan
             $table->string('customer_email'); // Email pelanggan
+            $table->decimal('weekend_surcharge', 10, 2)->default(0);
             $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending'); // Status pembayaran
             $table->timestamps();
         });

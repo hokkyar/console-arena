@@ -35,7 +35,7 @@
 
       <div style="display: flex; justify-content: space-between; gap: 5px;">
         <button type="button" class="back-btn" id="back-btn">Kembali</button>
-        <button type="button" class="confirm-btn" id="confirm-btn">Lanjut Pembayaran</button>
+        <button type="button" class="confirm-btn" id="confirm-btn">Konfirmasi</button>
       </div>
 
     </div>

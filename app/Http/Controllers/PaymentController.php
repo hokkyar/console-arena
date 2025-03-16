@@ -118,8 +118,13 @@ class PaymentController extends Controller
       }
     }
 
-    public function redirect()
+    public function redirect(Request $request)
     {
-        return view('payment-redirect');
+        $bookingId = explode('-', $request->order_id)[0];
+        $payment = Payment::with('booking')->where('booking_id', $bookingId)->first();
+        if (!$payment) abort(404);
+        $booking = $payment->booking ?? null;
+        $isSettlement = $request->transaction_status == 'settlement';
+        return view('payment-redirect', compact('payment', 'booking', 'isSettlement'));
     }
 }
