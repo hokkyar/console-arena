@@ -275,7 +275,7 @@
         }
         
         .btn-primary {
-            background-color: #4361ee;
+            background-color: #3e7cb1;
             color: white;
             border: none;
         }
@@ -285,7 +285,7 @@
         }
         
         .btn-primary:hover {
-            background-color: #3a56d4;
+            opacity: .9;
         }
         
         /* Help section */
@@ -319,6 +319,16 @@
                 text-align: center;
             }
         }
+
+        @media (max-width: 535px) {
+          .item-image {
+            display: none;
+          }
+          .order-details {
+            padding: 15px;
+          }
+        }
+
     </style>
 </head>
 <body>
@@ -348,7 +358,7 @@
             <div class="order-header">
                 <div class="order-number">
                     <h2>Order #{{ request()->query('order_id') }}</h2>
-                    <div class="order-date">Dipesan pada {{ $booking->booking_date }}</div>
+                    <div class="order-date">Dipesan pada {{ $booking->created_at }}</div>
                     <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px;">
                         <li><strong>Nama:</strong> {{ $booking->customer_name }}</li>
                         <li><strong>Email:</strong> {{ $booking->customer_email }}</li>
@@ -365,6 +375,7 @@
                     <div class="item-image">{{ $booking->service->id == 1 ? '🕹️' : '🎮' }}</div>
                     <div class="item-details">
                         <div class="item-name">{{ $booking->service->name }}</div>
+                        <div class="item-session">{{ $booking->booking_date }}</div>
                         <div class="item-session">{{ $booking->session }}</div>
                     </div>
                     <div class="item-price">
