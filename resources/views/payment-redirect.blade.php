@@ -362,7 +362,7 @@
             <div class="order-items">
                 <h3 class="section-title">Daftar Pesanan</h3>
                 <div class="item">
-                    <div class="item-image">🎮</div>
+                    <div class="item-image">{{ $booking->service->id == 1 ? '🕹️' : '🎮' }}</div>
                     <div class="item-details">
                         <div class="item-name">{{ $booking->service->name }}</div>
                         <div class="item-session">{{ $booking->session }}</div>

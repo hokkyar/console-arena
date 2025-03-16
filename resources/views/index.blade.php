@@ -4,16 +4,16 @@
   @include('components.modal')
   <div class="container">
       <header>
-          <h1>{{ config('app.name') }}</h1>
-          <p>Platform booking rental PS4 dan PS5 yang mudah dan cepat!</p>
+          <h1 style="text-align: center;">{{ config('app.name') }}</h1>
+          <p style="text-align: center;">Platform booking rental PS4 dan PS5 yang mudah dan cepat!</p>
       </header>
       <div class="booking-system">
           <div class="time-section">
-              <h2>Pilih Layanan</h2>
+              <h2 style="font-size: 24px; text-align: center;">Pilih Layanan</h2>
               <div class="services">
                 @foreach ($services as $service)
                     <div class="service-option {{ $loop->first ? 'selected' : '' }}" data-service-id="{{ $service->id }}" data-service="{{ json_encode($service) }}">
-                      <h3>{{ $service->name }}</h3>
+                      <h3><span style="margin-right: 3px;">{{ $loop->first ? '🕹️' : '🎮' }}</span> {{ $service->name }}</h3>
                   </div>
                 @endforeach
               </div>
@@ -110,6 +110,8 @@
 
                   indicator.textContent = remainingSessions > 0 ? `${remainingSessions} Sesi tersedia` : "Sesi penuh";
                   if (remainingSessions === 0) dayEl.classList.add('unavailable');
+                  if (remainingSessions === 1) indicator.classList.add('red');
+                  if (remainingSessions === 2) indicator.classList.add('orange');
 
                   dayEl.appendChild(indicator);
 
@@ -197,16 +199,16 @@
           backButton.addEventListener('click', showStep1);
           confirmButton.addEventListener('click', handleConfirm);
 
-          modal.style.display = "flex";
+          modal.classList.add('show');
           showStep1();
 
           closeModal.onclick = function() {
-              modal.style.display = "none";
+              modal.classList.remove('show');
           };
 
           window.onclick = function(event) {
               if (event.target == modal) {
-                  modal.style.display = "none";
+                  modal.classList.remove('show');
               }
           };
       }
@@ -298,7 +300,7 @@
         } else {
           $('#confirm-btn').prop('disabled', false)
           $('#back-btn').prop('disabled', false)
-          $('#confirm-btn').text('Lanjut Pembayaran')
+          $('#confirm-btn').text('Konfirmasi')
         }
       }
 
