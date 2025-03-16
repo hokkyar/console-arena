@@ -358,7 +358,7 @@
             <div class="order-header">
                 <div class="order-number">
                     <h2>Order #{{ request()->query('order_id') }}</h2>
-                    <div class="order-date">Dipesan pada {{ $booking->created_at }}</div>
+                    <div class="order-date">Dipesan pada {{ $booking->created_at->timezone('Asia/Jakarta'); }}</div>
                     <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px;">
                         <li><strong>Nama:</strong> {{ $booking->customer_name }}</li>
                         <li><strong>Email:</strong> {{ $booking->customer_email }}</li>
