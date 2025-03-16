@@ -205,7 +205,7 @@
         .info-header svg {
             width: 18px;
             height: 18px;
-            margin-right: 8px;
+            margin-right: 3px;
             fill: #666;
         }
         
@@ -379,7 +379,7 @@
                         <div class="item-session">{{ $booking->session }}</div>
                     </div>
                     <div class="item-price">
-                        <div class="price rupiah">{{ $payment->amount }}</div>
+                        <div class="price rupiah">{{ $booking->service->base_price }}</div>
                     </div>
                 </div>
             </div>
